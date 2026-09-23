@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { GraphNode, GraphLink } from "@/lib/types";
 import { formatYear, neighborsOf } from "@/lib/graph";
 import { RELATION_COLORS } from "./GraphView";
@@ -8,6 +9,8 @@ interface DetailPanelProps {
   node: GraphNode | null;
   allNodes: GraphNode[];
   links: GraphLink[];
+  isInLibrary: boolean;
+  onToggleLibrary: (id: string) => void;
   onSelectNode: (id: string) => void;
   onClose: () => void;
 }
@@ -16,6 +19,8 @@ export default function DetailPanel({
   node,
   allNodes,
   links,
+  isInLibrary,
+  onToggleLibrary,
   onSelectNode,
   onClose,
 }: DetailPanelProps) {
@@ -40,6 +45,16 @@ export default function DetailPanel({
         ✕
       </button>
       <div className="detail-header">
+        {node.coverUrl && (
+          <Image
+            className="detail-cover"
+            src={node.coverUrl}
+            alt={`${node.title} 초판본 표지`}
+            width={150}
+            height={225}
+            unoptimized
+          />
+        )}
         <p className="detail-country">
           {node.country} · {formatYear(node.year)}
         </p>
@@ -49,6 +64,37 @@ export default function DetailPanel({
       </div>
 
       <p className="detail-summary">{node.summary}</p>
+
+      <button
+        className={`library-toggle ${isInLibrary ? "library-toggle--active" : ""}`}
+        onClick={() => onToggleLibrary(node.id)}
+      >
+        <span aria-hidden="true">{isInLibrary ? "✓" : "+"}</span>
+        {isInLibrary ? "내 서재에서 빼기" : "내 서재에 담기"}
+      </button>
+
+      {(node.themes?.length || node.form || node.context) && (
+        <div className="detail-reading-notes">
+          {node.form && (
+            <p className="detail-note">
+              <strong>형식</strong>
+              {node.form}
+            </p>
+          )}
+          {node.themes && node.themes.length > 0 && (
+            <p className="detail-note">
+              <strong>핵심 주제</strong>
+              {node.themes.join(" · ")}
+            </p>
+          )}
+          {node.context && (
+            <p className="detail-note">
+              <strong>읽을 맥락</strong>
+              {node.context}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="detail-relations">
         <h3 className="detail-relations-title">

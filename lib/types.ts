@@ -13,6 +13,10 @@ export interface Book {
   year: number;
   country: string;
   summary: string;
+  themes?: string[];
+  form?: string;
+  context?: string;
+  coverUrl?: string;
 }
 
 export interface Relation {

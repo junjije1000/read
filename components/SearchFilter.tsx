@@ -11,6 +11,7 @@ interface SearchFilterProps {
   onToggleType: (t: RelationType) => void;
   onResetTypes: () => void;
   resultCount: number;
+  onSearchFocus?: () => void;
 }
 
 export default function SearchFilter({
@@ -20,6 +21,7 @@ export default function SearchFilter({
   onToggleType,
   onResetTypes,
   resultCount,
+  onSearchFocus,
 }: SearchFilterProps) {
   const allActive = activeTypes.size === ALL_RELATION_TYPES.length;
 
@@ -30,6 +32,7 @@ export default function SearchFilter({
           type="text"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
+          onFocus={onSearchFocus}
           placeholder="책 제목이나 작가로 검색…"
           className="search-input"
           aria-label="책 검색"
